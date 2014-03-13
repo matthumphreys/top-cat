@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular.min.js"></script>
+    <script src="js/app.js" type="text/javascript"></script>
+    <script src="js/mainController.js" type="text/javascript"></script>
+    <style>
+      .out {
+        color: #CCC;
+      }
+      .read, .up {
+        color: #0C0;
+      }
+      .skipped, .down {
+        color: #F00;
+      }
+      .no-change {
+        color: #000;
+      }
+      li.current {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div ng-app="newsBlend" ng-controller="mainController" ng-init="init()">
+
+      <h1>The Probability Lab</h1>
+      <p ng-show="errorMessage">Error: {{errorMessage}}</p>
+
+      <h3><a href="#" ng-click="next(true)">{{currentPost.title}}</a></h3>
+      <div>
+        <input type="button" value="Prev" ng-click="prev()" ng-disabled="(currentPostIndex <= 0)" />
+        <input type="button" value="Read" ng-click="next(true)"  ng-disabled="(currentPostIndex >= 10)" />
+        <input type="button" value="Skip" ng-click="next(false)" ng-disabled="(currentPostIndex >= 10)" />
+      </div>
+      <p>
+        <a href="#" ng-click="next(true)">
+          <img src="{{currentPost.featured_image}}" width="300" />
+        </a>
+      </p>
+      
+
+      <h3>Session playlist [<span ng-click="togglePlaylist()">+/-</span>]</h3>
+      <div ng-show="playlistVisible == true">
+        <ul>
+          <li ng-repeat='post in posts' ng-hide='$index > 12' ng-class="{'out': ($index >= 10), 'read': post.isHit, 'skipped': post.isMiss, 'current': ($index == currentPostIndex)}">
+            <span ng-class="{'up': post.myCatProb > globalStats.softenedProb, 'down': post.myCatProb < globalStats.softenedProb, 'no-change': post.myCatProb == globalStats.softenedProb}">{{post.catSlug}}</span> / 
+            <span>{{post.title}}</span>
+            <i>
+              [{{post.genericScore}} * {{post.myCatProb}}% = {{post.myScore}}]
+            </i>
+            <span class="xxno-change" ng-show="post.isHit == true">[<a href="{{post.URL}}" target="winDetail">view</a>]</span>
+          </li>
+          <li class="out">{{posts.length - 13}} lowest stories ommitted</li>
+        </ul>
+      </div>
+
+      <h3>Probability of reading a category</h3>
+      <p>Note: "Softened" probabilities reduce the extreme values caused by small sample sizes.</p>
+      <div>
+        <ul>
+          <li>default: ({{globalStats.hits}} stories read / {{globalStats.actions}} stories actioned) = {{globalStats.actualProb}}%
+            softened to {{globalStats.softenedProb}}%
+          </li>
+          <li ng-repeat='(cat, stats) in categoryStats' ng-class="{'up': stats.actualProb > globalStats.softenedProb, 'down': stats.actualProb < globalStats.softenedProb}">{{cat}}: ({{stats.hits}}/{{stats.actions}}) = {{stats.actualProb}}%, 
+            softened to {{stats.softenedProb}}%</li>
+        </ul>
+      </div>
+
+      <h3>History: {{postHistory.length}} [<span ng-click="toggleHistory()">+/-</span>]</h3>
+      <div ng-show="historyVisible == true">
+        <ul>
+          <li ng-repeat='post in postHistory track by $index' ng-class="{'read': post.isHit, 'skipped': post.isMiss}" >{{post.title}}</li>
+        </ul>
+        <div ng-show="postHistory.length == 0">History is empty</div>
+        <p><input type="button" value="Clear history" ng-click='clearPostHistory()' /></p>
+      </div>
+
+      <h3>Tests</h3>
+      <input type="button" value="Test anchorProb" ng-click="testAnchorProb()" />
+      <input type="button" value="Test softenProb" ng-click="testSoftenProb()" />
+    </div>
+  </body>
+</html>

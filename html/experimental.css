@@ -1,0 +1,21 @@
+li {
+	margin: 2px;
+}
+.up {
+	background-color: #0C0;
+	color: #FFF;
+	font-weight: normal;
+	padding: 0 4px;
+}
+.down {
+	background-color: #F00;
+	color: #FFF;
+	font-weight: normal;
+	padding: 0 4px;
+}
+.default {
+	background-color: #999;
+	color: #FFF;
+	font-weight: normal;
+	padding: 0 4px;
+}
