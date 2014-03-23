@@ -18,8 +18,13 @@ The source lives in this project's html folder.
 Java code
 ---------
 
-Provided in in the src folder. There are only a few classes. 
-To see how's it's used view src/test/topcat/CategoryManagerTest.java 
+Provided in the src folder. There are only a few classes. 
+To see how's it's used view src/test/java/topcat/CategoryManagerTest.java 
+
+Maven
+-----
+
+The project is built using Maven. Until we put the jar in a maven repo you can download it from this project's dist folder.
 
 Anything else?
 --------------
