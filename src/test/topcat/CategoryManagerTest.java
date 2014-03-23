@@ -25,8 +25,8 @@ public class CategoryManagerTest {
 		assertEquals("Should have two elements", 2, cats.size());
 		assertEquals("1st should be news", CAT_NEWS, cats.get(0).getName());
 		assertEquals("2nd should be sport", CAT_SPORT, cats.get(1).getName());
-		assertTrue("News should have higher probability than sport", 
-				cats.get(0).getSoftProbability(defaultProb) > cats.get(1).getSoftProbability(defaultProb));
+		int diff = cats.get(0).getSoftProbability(defaultProb) - cats.get(1).getSoftProbability(defaultProb);
+		assertTrue("News should have higher probability than sport", diff > 0);
 	}
 	
 	@Test
