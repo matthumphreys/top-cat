@@ -13,7 +13,7 @@ HTML/JS demo
 ------------
 
 [This demo](http://s.metro.co.uk/dev/lab/) helps show how it works. 
-The source lives in this project's html folder.
+The source lives in this project's demo folder.
 
 Java code
 ---------
