@@ -16,3 +16,10 @@ Java code
 ---------
 
 Provided in in the src folder. There are only a few classes - the tests (under src/test) serve as examples. 
+
+Anything else?
+--------------
+
+Just this...
+
+![Top Cat](http://img4.wikia.nocookie.net/__cb20110424163028/topcat/images/5/50/Topcat002-1-.gif)
