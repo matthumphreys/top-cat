@@ -18,6 +18,9 @@ public class CategoryManager {
 		this(50);
 	}
 	
+	/** 
+	 * @param defaultProb just used to cal initial overallSoftProb (when sample size is 0)
+	 */
 	public CategoryManager(int defaultProb) {
 		//this.defaultProb = defaultProb;
 		overallHardProb = defaultProb;
@@ -39,9 +42,9 @@ public class CategoryManager {
 	}
 	
 	/**
-	 * Gets top categories, hottest first.
+	 * @return Hottest first.
 	 */
-	public List<Category> getTopCategories() {
+	public List<Category> getCategories() {
 		int overallHitCount = 0;
 		int overallEventCount = 0;
 		List<Category> catStats = new ArrayList<Category>();
@@ -55,6 +58,37 @@ public class CategoryManager {
 		
 		Collections.sort(catStats, new CategoryComparator(overallSoftProb));
 		return catStats;
+	}
+	
+	/**
+	 * Uses soft probabilities
+	 * @param defaultProb used for calculating "soft" probabilities
+	 * @return Only categories with a hit-rate higher than the "global" hit-rate
+	 */
+	public List<Category> getHotCategories(int defaultProb) {
+		List<Category> all = getCategories();
+		List<Category> hot = new ArrayList<Category>();
+		for (Category cat : all) {
+			if (cat.getSoftProbability(defaultProb) > overallSoftProb) {
+				hot.add(cat);
+			}
+		}
+		return hot;
+	}
+	
+	/**
+	 * Uses hard probabilities
+	 * @return Only categories with a hit-rate higher than the defaultProb parameter
+	 */
+	public List<Category> getCategoriesHotterThan(int threshold) {
+		List<Category> all = getCategories();
+		List<Category> hot = new ArrayList<Category>();
+		for (Category cat : all) {
+			if (cat.getHardProbability(threshold) > threshold) {
+				hot.add(cat);
+			}
+		}
+		return hot;
 	}
 	
 	public Category getStats(String category) {

@@ -92,4 +92,7 @@ public class Category {
 		return Math.pow(ROUGHLY_GOLDEN_RATIO, count);
 	}
 	
+	public String toString() {
+		return ("Cat[" + name + " " + hitCount + "/" + eventCount + "]");
+	}
 }
