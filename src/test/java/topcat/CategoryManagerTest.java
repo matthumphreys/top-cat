@@ -12,17 +12,25 @@ public class CategoryManagerTest {
 	private final String CAT_ENTS	= "ents-tech";
 	private final String CAT_LIFE_STYLE = "life-style";
 
+	/**
+	 * This shows how hit-rate is more meaningful than number of hits
+	 */
 	@Test
 	public void simpleExample() {
 		int defaultProb = 30;
 		CategoryManager mngr = new CategoryManager(defaultProb);
 		
-		// User reads a "news" article
+		// User reads 1 out of 2 news articles (50%)
 		mngr.addCategoryEvent("news", true);
-		// User skips a "sport" article, then reads one
-		mngr.addCategoryEvent("sport", false);
+		mngr.addCategoryEvent("news", false);
+		// User reads 2 out of 5 sport articles (40%)
 		mngr.addCategoryEvent("sport", true);
+		mngr.addCategoryEvent("sport", true);
+		mngr.addCategoryEvent("sport", false);
+		mngr.addCategoryEvent("sport", false);
+		mngr.addCategoryEvent("sport", false);
 		
+		// News should rank higher than sport, even though more sport articles were read
 		List<Category> cats = mngr.getCategories();
 		assertEquals("Should have two elements", 2, cats.size());
 		assertEquals("1st should be news", CAT_NEWS, cats.get(0).getName());
@@ -32,19 +40,19 @@ public class CategoryManagerTest {
 	}
 	
 	/**
-	 * Threshold is 34%
-	 * 
-	 * Category is hot if user reads at least
-	 * 1 out of 1 (100%)
-	 * 1 out of 2 (50%)
-	 * 2 out of 3 (66%)
-	 * 2 out of 5 (40%)
-	 * 7 out of 20 (35%)
-	 * 
-	 * Category is NOT hot if user reads 1/3 (33%)
+	 * We can get categories exceeding a given hit-rate.
+	 * <p>
+	 * For example, you might consider hot as a hit-rate greater than 34%...
+	 * reading 1 out of 3 articles (=33%) wouldn't qualify, but these would...
+	 * <p>
+	 * 1 out of 1 (100%)<br>
+	 * 1 out of 2 (50%)<br>
+	 * 2 out of 3 (66%)<br>
+	 * 2 out of 5 (40%)<br>
+	 * 7 out of 20 (35%)<br>
 	 */
 	@Test
-	public void getCategoriesHotterThan() {
+	public void testGetCategoriesHotterThan() {
 		int defaultProb = 30;	// Just used to calc initial soft prob
 		int threshold = 34;
 		CategoryManager mngr = new CategoryManager(defaultProb);
@@ -68,9 +76,11 @@ public class CategoryManagerTest {
 		assertEquals("cats[2].name", CAT_ENTS, cats.get(2).getName());
 	}
 	
-	/** Categories hotter than the overall hit-rate */
+	/**
+	 * We can get categories with a hit-rate greater than the user's overall hit-rate
+	 */
 	@Test
-	public void getHotCategories() {
+	public void testGetHotCategories() {
 		int defaultProb = 34;
 		CategoryManager mngr = new CategoryManager(defaultProb);
 		
@@ -84,7 +94,9 @@ public class CategoryManagerTest {
 		mngr.addCategoryEvent(CAT_ENTS, true);
 		mngr.addCategoryEvent(CAT_ENTS, false);
 		mngr.addCategoryEvent(CAT_LIFE_STYLE, true);
-		// Overall hit-rate is 50%!
+		
+		// Overall hit-rate is 50%
+		// Only LIFE_STYLE and SPORT have a higher hit-rate
 		
 		List<Category> cats = mngr.getHotCategories(defaultProb);
 		assertNotNull(cats);
@@ -94,7 +106,7 @@ public class CategoryManagerTest {
 	}
 	
 	@Test
-	public void moreThoroughTest() {
+	public void testOneEventAtATime() {
 		CategoryManager mngr = new CategoryManager();
 		List<Category> cats = null;
 		
