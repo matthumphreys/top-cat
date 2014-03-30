@@ -48,24 +48,6 @@ public class Category {
 	}
 	
 	/**
-	 * For small samples, probabilities are moved away from extreme values. 
-	 * Useful for "global" probabilities.
-	 * @param defaultProb prob returned if eventCount == 0 
-	 */
-	public int getSoftProbability(int defaultProb) {
-		double cushionFactor = getCushionFactor();
-		final int hardProb = getHardProbability(defaultProb);
-		double result;
-		
-		if (hardProb < 50) {
-			result = 50 - ( (50 - hardProb) * (1 - cushionFactor) );
-		} else {
-			result = hardProb - ( (hardProb - 50) * (cushionFactor) );
-		}
-		return (int) Math.round(result);
-	}
-	
-	/**
 	 * For small samples, probabilities are pulled closer to <i>anchorProb</i>
 	 * @param anchorProb
 	 */

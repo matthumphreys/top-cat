@@ -9,7 +9,6 @@ import java.util.Map;
 /** NOT designed for access by multiple concurrent threads. */
 public class CategoryManager {
 	private Map<String, Category> catStatsMap = new HashMap<String, Category>();
-	//private int defaultProb;
 	private int overallHardProb;
 	private int overallSoftProb;
 	
@@ -19,10 +18,9 @@ public class CategoryManager {
 	}
 	
 	/** 
-	 * @param defaultProb just used to cal initial overallSoftProb (when sample size is 0)
+	 * @param defaultProb just used to calc initial overallSoftProb (when sample size is 0)
 	 */
 	public CategoryManager(int defaultProb) {
-		//this.defaultProb = defaultProb;
 		overallHardProb = defaultProb;
 		overallSoftProb = getSoftProbability(defaultProb, 0);
 	}
@@ -53,7 +51,9 @@ public class CategoryManager {
 			overallEventCount = overallEventCount + stats.getEventCount();
 			catStats.add(stats);
 		}
+		// Actual probability
 		overallHardProb = Category.getHardProbability(overallHitCount, overallEventCount);
+		// "Softened" away from extremes
 		overallSoftProb = getSoftProbability(overallHardProb, overallEventCount);
 		
 		Collections.sort(catStats, new CategoryComparator(overallSoftProb));
@@ -61,7 +61,6 @@ public class CategoryManager {
 	}
 	
 	/**
-	 * Uses soft probabilities
 	 * @param defaultProb used for calculating "soft" probabilities
 	 * @return Only categories with a hit-rate higher than the "global" hit-rate
 	 */
@@ -69,7 +68,7 @@ public class CategoryManager {
 		List<Category> all = getCategories();
 		List<Category> hot = new ArrayList<Category>();
 		for (Category cat : all) {
-			if (cat.getSoftProbability(defaultProb) > overallSoftProb) {
+			if (cat.getAnchoredProbability(defaultProb) > overallSoftProb) {
 				hot.add(cat);
 			}
 		}
@@ -77,14 +76,13 @@ public class CategoryManager {
 	}
 	
 	/**
-	 * Uses hard probabilities
 	 * @return Only categories with a hit-rate higher than the defaultProb parameter
 	 */
-	public List<Category> getCategoriesHotterThan(int threshold) {
+	public List<Category> getCategoriesHotterThan(int defaultProb) {
 		List<Category> all = getCategories();
 		List<Category> hot = new ArrayList<Category>();
 		for (Category cat : all) {
-			if (cat.getHardProbability(threshold) > threshold) {
+			if (cat.getAnchoredProbability(defaultProb) > defaultProb) {
 				hot.add(cat);
 			}
 		}
@@ -94,22 +92,7 @@ public class CategoryManager {
 	public Category getStats(String category) {
 		return catStatsMap.get(category);
 	}
-	
-//	public int getHardProbability(String category) {
-//		CategoryStats stat = catStatsMap.get(category);
-//		return (stat == null) ? defaultProb : stat.getHardProbability(overallProb);
-//	}
-//	
-//	public int getSoftProbability(String category) {
-//		CategoryStats stat = catStatsMap.get(category);
-//		return (stat == null) ? defaultProb : stat.getSoftProbability(overallProb);
-//	}
-//	
-//	public int getAnchoredProbability(String category) {
-//		CategoryStats stat = catStatsMap.get(category);
-//		return (stat == null) ? defaultProb : stat.getAnchoredProbability(overallProb);
-//	}
-	
+
 	/**
 	 * For small samples, probabilities are moved away from extreme values. 
 	 * Useful for "global" probabilities.

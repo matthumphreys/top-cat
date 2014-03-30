@@ -18,7 +18,7 @@ public class CategoryManagerTest {
 	@Test
 	public void simpleExample() {
 		int defaultProb = 30;
-		CategoryManager mngr = new CategoryManager(defaultProb);
+		CategoryManager mngr = new CategoryManager();
 		
 		// User reads 1 out of 2 news articles (50%)
 		mngr.addCategoryEvent("news", true);
@@ -35,7 +35,7 @@ public class CategoryManagerTest {
 		assertEquals("Should have two elements", 2, cats.size());
 		assertEquals("1st should be news", CAT_NEWS, cats.get(0).getName());
 		assertEquals("2nd should be sport", CAT_SPORT, cats.get(1).getName());
-		int diff = cats.get(0).getSoftProbability(defaultProb) - cats.get(1).getSoftProbability(defaultProb);
+		int diff = cats.get(0).getAnchoredProbability(defaultProb) - cats.get(1).getAnchoredProbability(defaultProb);
 		assertTrue("News should have higher probability than sport", diff > 0);
 	}
 	
@@ -53,9 +53,8 @@ public class CategoryManagerTest {
 	 */
 	@Test
 	public void testGetCategoriesHotterThan() {
-		int defaultProb = 30;	// Just used to calc initial soft prob
 		int threshold = 34;
-		CategoryManager mngr = new CategoryManager(defaultProb);
+		CategoryManager mngr = new CategoryManager();
 		
 		mngr.addCategoryEvent(CAT_NEWS, true);
 		mngr.addCategoryEvent(CAT_NEWS, false);
@@ -82,7 +81,7 @@ public class CategoryManagerTest {
 	@Test
 	public void testGetHotCategories() {
 		int defaultProb = 34;
-		CategoryManager mngr = new CategoryManager(defaultProb);
+		CategoryManager mngr = new CategoryManager();
 		
 		mngr.addCategoryEvent(CAT_NEWS, true);
 		mngr.addCategoryEvent(CAT_NEWS, false);
@@ -128,6 +127,25 @@ public class CategoryManagerTest {
 		assertEquals("cats.size", 2, cats.size());
 		assertEquals("cats[0].name", CAT_SPORT, cats.get(0).getName());
 		assertEquals("cats[1].name", CAT_NEWS, cats.get(1).getName());
-	}	
+	}
+
+	@Test
+	public void testSoftProbability() {
+		// One event
+		assertEquals("100,1", 70, CategoryManager.getSoftProbability(100, 1));
+		assertEquals("0,1", 30, CategoryManager.getSoftProbability(0, 1));
+
+		// Two events
+		assertEquals("0,2", 18, CategoryManager.getSoftProbability(0, 2));
+		assertEquals("50,2", 50, CategoryManager.getSoftProbability(50, 2));
+		assertEquals("100,2", 82, CategoryManager.getSoftProbability(100, 2));	
+
+		// Three events
+		assertEquals("0,3", 11, CategoryManager.getSoftProbability(0, 3));
+		assertEquals("67,3", 63, CategoryManager.getSoftProbability(67, 3));
+
+		// Five events
+		assertEquals("0,5", 4, CategoryManager.getSoftProbability(0, 5));
+	}
 
 }
