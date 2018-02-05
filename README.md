@@ -12,8 +12,7 @@ It adjusts probabilities to compensate for small sample sizes.
 HTML/JS demo
 ------------
 
-[This demo](http://s.metro.co.uk/dev/lab/) helps show how it works. 
-The source lives in this project's demo folder.
+See this project's demo folder.
 
 Java code
 ---------
